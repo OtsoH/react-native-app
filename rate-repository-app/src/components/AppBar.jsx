@@ -2,6 +2,8 @@ import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import Text from './Text';
 import { Link } from 'react-router-native';
+import useAuthUser from '../hooks/useAuthUser';
+import useSignOut from '../hooks/useSignOut';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,6 +27,13 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+  const { me } = useAuthUser();
+  const signOut = useSignOut();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal contentContainerStyle={{ flexGrow: 1 }}>
@@ -33,11 +42,19 @@ const AppBar = () => {
             Repositories
           </Text>
         </Link>
-         <Link to="/signin" component={Pressable} style={styles.tab}>
-          <Text style={styles.tabText}>
-            Sign in
-          </Text>
-        </Link>
+        {me ? (
+          <Pressable style={styles.tab} onPress={handleSignOut}>
+            <Text style={styles.tabText}>
+              Sign out
+            </Text>
+          </Pressable>
+        ) : (
+          <Link to="/signin" component={Pressable} style={styles.tab}>
+            <Text style={styles.tabText}>
+              Sign in
+            </Text>
+          </Link>
+        )}
       </ScrollView>
     </View>
   );
