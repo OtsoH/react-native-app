@@ -42,6 +42,22 @@ const AppBar = () => {
             Repositories
           </Text>
         </Link>
+         {me && (
+          <Link to="/create-review" component={Pressable} style={styles.tab}>
+            <Text style={styles.tabText}>
+              Create a review
+            </Text>
+          </Link>
+        )}
+
+        {me && (
+          <Link to="/my-reviews" component={Pressable} style={styles.tab}>
+            <Text style={styles.tabText}>
+              My Reviews
+            </Text>
+          </Link>
+        )}
+
         {me ? (
           <Pressable style={styles.tab} onPress={handleSignOut}>
             <Text style={styles.tabText}>
@@ -49,11 +65,18 @@ const AppBar = () => {
             </Text>
           </Pressable>
         ) : (
-          <Link to="/signin" component={Pressable} style={styles.tab}>
-            <Text style={styles.tabText}>
-              Sign in
-            </Text>
-          </Link>
+          <>
+            <Link to="/signin" component={Pressable} style={styles.tab}>
+              <Text style={styles.tabText}>
+                Sign in
+              </Text>
+            </Link>
+          <Link to="/signup" component={Pressable} style={styles.tab}>
+              <Text style={styles.tabText}>
+                Sign up
+              </Text>
+            </Link>
+          </>
         )}
       </ScrollView>
     </View>

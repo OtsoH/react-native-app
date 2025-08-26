@@ -4,6 +4,7 @@ import Text from './Text';
 import * as Yup from 'yup';
 import useSignIn from '../hooks/useSignIn';
 import { useNavigate } from 'react-router-native';
+import { useState } from 'react';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,16 +43,23 @@ const styles = StyleSheet.create({
 const SignInForm = () => {
   const [signIn] = useSignIn();
   const navigate = useNavigate();
+  const [signInError, setSignInError] = useState('');
 
   const onSubmit = async (values) => {
     const { username, password } = values;
 
     try {
+      setSignInError('');
       const data = await signIn({ username, password });
       console.log(data);
       navigate('/');
     } catch (e) {
       console.log(e);
+      if (e.message.includes('Invalid username or password')) {
+        setSignInError('Invalid username or password');
+      } else {
+        setSignInError('Sign in failed. Please try again.');
+      }
     }
   };
 
@@ -65,9 +73,14 @@ const SignInForm = () => {
 
   return (
     <View style={styles.container}>
+      {signInError ? (
+        <Text style={styles.errorText}>{signInError}</Text>
+      ) : null}
+
       <TextInput
         style={[styles.input, formik.touched.username && formik.errors.username && styles.inputError]}
         onChangeText={formik.handleChange('username')}
+        onFocus={() => setSignInError('')}
         onBlur={formik.handleBlur('username')}
         value={formik.values.username}
         placeholder="Username"
@@ -79,6 +92,7 @@ const SignInForm = () => {
       <TextInput
         style={[styles.input, formik.touched.password && formik.errors.password && styles.inputError]}
         onChangeText={formik.handleChange('password')}
+        onFocus={() => setSignInError('')}
         onBlur={formik.handleBlur('password')}
         value={formik.values.password}
         placeholder="Password"
